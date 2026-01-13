@@ -1,0 +1,528 @@
+# OBSCURA API Documentation for LLMs
+# Post-Quantum Secure Intent Settlement System
+
+## Overview
+Obscura is a post-quantum secure intent settlement system combining:
+- WOTS+ (Winternitz One-Time Signatures) for quantum-resistant authorization
+- SIP (Shielded Intent Protocol) for privacy-preserving transactions
+- Stealth addresses for unlinkable payments
+- Pedersen commitments for hidden amounts
+
+Base URL: https://obscura-api.daemonprotocol.com
+
+---
+
+## ENDPOINTS
+
+### 1. GET /
+Get API information and available endpoints.
+
+Response:
+{
+  "name": "Winternitz-SIP API",
+  "version": "0.1.0",
+  "description": "Post-quantum secure intent settlement API",
+  "endpoints": {
+    "health": "/health",
+    "intents": "/api/v1/intents",
+    "quotes": "/api/v1/quotes",
+    "transfer": "/api/v1/transfer",
+    "swap": "/api/v1/swap",
+    "batches": "/api/v1/batches",
+    "pools": "/api/v1/pools"
+  }
+}
+
+---
+
+### 2. GET /health
+Health check endpoint.
+
+Response:
+{
+  "status": "healthy",
+  "timestamp": "2026-01-13T13:57:27.588Z",
+  "services": {
+    "auth": "ready",
+    "aggregator": "ready"
+  }
+}
+
+---
+
+### 3. POST /api/v1/transfer
+Create a private transfer intent.
+
+Request Body (JSON):
+{
+  "recipient": "string",      // REQUIRED: Recipient wallet address
+  "asset": "string",          // REQUIRED: Token contract address
+  "amount": "string",         // REQUIRED: Amount as string (supports bigint)
+  "sourceChain": "string",    // REQUIRED: Source chain (solana, ethereum, polygon, arbitrum)
+  "targetChain": "string",    // OPTIONAL: Target chain (defaults to sourceChain)
+  "privacyLevel": "string"    // OPTIONAL: transparent, shielded, compliant (default: shielded)
+}
+
+Supported Chains:
+- solana: Solana network
+- ethereum: Ethereum mainnet/testnet
+- polygon: Polygon network
+- arbitrum: Arbitrum L2
+
+Privacy Levels:
+- transparent: All visible (for debugging/auditing)
+- shielded: Maximum privacy (sender, recipient, amount hidden)
+- compliant: Encrypted with viewing keys (regulatory friendly)
+
+Example Request (Ethereum):
+{
+  "recipient": "0x1234567890123456789012345678901234567890",
+  "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "amount": "1000000",
+  "sourceChain": "ethereum",
+  "privacyLevel": "shielded"
+}
+
+Example Request (Solana):
+{
+  "recipient": "MqFdeJsRooZGgSwAsCeRnZ3y8v4CL9xpZDRNxbaQ8VN",
+  "asset": "So11111111111111111111111111111111111111112",
+  "amount": "1000000000",
+  "sourceChain": "solana",
+  "privacyLevel": "shielded"
+}
+
+Success Response (201):
+{
+  "success": true,
+  "intentId": "188c73a6-ecb7-41d4-98cc-07a7100f229b",
+  "type": "transfer",
+  "stealthAddress": "028a02a649f8e89b9b552203e9d92dc4f10b3f43c43e4936dcbe898a189048cd71",
+  "commitment": "e320e22c54666fcd00414be00f8721eac463c624e2cd4826aa98474b96bb0212",
+  "sourceChain": "ethereum",
+  "targetChain": "ethereum",
+  "expiresAt": 1768316257
+}
+
+Error Response (400):
+{
+  "error": "Missing required fields: recipient, asset, amount, sourceChain"
+}
+
+---
+
+### 4. POST /api/v1/deposit
+Create a deposit to the privacy vault.
+
+Request Body (JSON):
+{
+  "network": "string",        // REQUIRED: Network (solana, ethereum, polygon, arbitrum)
+  "token": "string",          // REQUIRED: Token type (native, usdc, usdt)
+  "amount": "string",         // REQUIRED: Amount as string
+  "signature": "string",      // REQUIRED: Wallet signature
+  "depositor": "string"       // REQUIRED: Depositor wallet address
+}
+
+Example Request:
+{
+  "network": "solana",
+  "token": "native",
+  "amount": "1.5",
+  "signature": "abc123...",
+  "depositor": "MqFdeJsRooZGgSwAsCeRnZ3y8v4CL9xpZDRNxbaQ8VN"
+}
+
+Success Response (201):
+{
+  "success": true,
+  "depositId": "uuid-here",
+  "type": "deposit",
+  "stealthAddress": "hex-stealth-address",
+  "commitment": "hex-commitment",
+  "sourceChain": "solana",
+  "amount": "1.5",
+  "token": "native",
+  "expiresAt": 1768316257
+}
+
+Error Response (400):
+{
+  "error": "Missing required fields: network, token, amount, signature, depositor"
+}
+
+---
+
+### 5. POST /api/v1/swap
+Create a private swap intent.
+
+Request Body (JSON):
+{
+  "tokenIn": "string",        // REQUIRED: Input token address
+  "tokenOut": "string",       // REQUIRED: Output token address
+  "amountIn": "string",       // REQUIRED: Input amount as string
+  "minAmountOut": "string",   // REQUIRED: Minimum output amount
+  "deadline": number,         // OPTIONAL: Unix timestamp deadline
+  "privacyLevel": "string"    // OPTIONAL: transparent, shielded, compliant
+}
+
+Example Request:
+{
+  "tokenIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "tokenOut": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+  "amountIn": "1000000",
+  "minAmountOut": "990000",
+  "privacyLevel": "shielded"
+}
+
+Success Response (201):
+{
+  "success": true,
+  "intentId": "991771ee-a91e-40a9-bd33-d5630da03be6",
+  "type": "swap",
+  "stealthAddress": "038654c971eaec6acea9fcdd988d08d1089aa70a7c84efd56495884d0e137e63e1",
+  "commitment": "6fe389331c033f38c5f74c212cccec0b0b56c15480fb95f6b46072f220fced7b",
+  "expiresAt": 1768316266
+}
+
+---
+
+### 6. POST /api/v1/intents
+Create a shielded intent (generic).
+
+Request Body (JSON):
+{
+  "action": "string",         // REQUIRED: transfer, swap
+  "sourceChain": "string",    // REQUIRED: Source chain
+  "targetChain": "string",    // OPTIONAL: Target chain
+  "asset": "string",          // REQUIRED: Asset address
+  "amount": "string",         // REQUIRED: Amount as string
+  "recipient": "string",      // REQUIRED: Recipient address
+  "deadline": number,         // OPTIONAL: Unix timestamp
+  "privacyLevel": "string",   // OPTIONAL: Privacy level
+  "data": "string"            // OPTIONAL: Hex encoded extra data
+}
+
+Success Response (201):
+{
+  "success": true,
+  "intentId": "385b775c-6bbb-4220-a659-46c08502bb4d",
+  "stealthAddress": "03d0d2d815ff65ebf7205102a2c6d45a18f386c0e7750a4186d6738033ef9c4b70",
+  "commitment": "e1bbed21eee2d3383ba02b5cd2e8d7805433a975aba5ed2d1586de2b319cf031",
+  "expiresAt": 1768316277
+}
+
+---
+
+### 7. GET /api/v1/intents/:intentId
+Get intent status by ID.
+
+Response:
+{
+  "intentId": "string",
+  "status": "pending|submitted|settled|failed",
+  "batchId": "string",
+  "position": number,
+  "createdAt": number,
+  "settledAt": number
+}
+
+---
+
+### 8. GET /api/v1/batches
+Get pending batches.
+
+Response:
+{
+  "count": 0,
+  "batches": [
+    {
+      "batchId": "string",
+      "chain": "string",
+      "intentCount": number,
+      "createdAt": number
+    }
+  ]
+}
+
+---
+
+### 9. POST /api/v1/batches/flush
+Force flush all pending batches for settlement.
+
+Response:
+{
+  "success": true,
+  "settledBatches": number,
+  "records": [
+    {
+      "batchId": "string",
+      "chain": "string",
+      "txHash": "string",
+      "status": "string",
+      "gasUsed": "string"
+    }
+  ]
+}
+
+---
+
+### 10. POST /api/v1/pools
+Register a WOTS key pool.
+
+Request Body (JSON):
+{
+  "merkleRoot": "string",     // REQUIRED: Hex-encoded merkle root (64 chars)
+  "totalKeys": number,        // REQUIRED: Total number of keys in pool
+  "params": {                 // OPTIONAL: WOTS parameters
+    "w": 16,                  // Winternitz parameter (default: 16)
+    "n": 32                   // Hash output length (default: 32)
+  },
+  "owner": "string"           // OPTIONAL: Pool owner address
+}
+
+Example Request:
+{
+  "merkleRoot": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890ab",
+  "totalKeys": 1000,
+  "params": {"w": 16, "n": 32}
+}
+
+Success Response (201):
+{
+  "success": true,
+  "merkleRoot": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890ab",
+  "totalKeys": 1000,
+  "registeredAt": 1768312696778
+}
+
+---
+
+### 11. GET /api/v1/pools/:merkleRoot
+Get pool information by merkle root.
+
+Response:
+{
+  "root": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890ab",
+  "totalKeys": 1000,
+  "params": {
+    "w": 16,
+    "n": 32,
+    "len1": 64,
+    "len2": 3,
+    "len": 67
+  },
+  "registeredAt": 1768312696778
+}
+
+---
+
+### 12. POST /api/v1/quotes
+Get quotes for an intent.
+
+Request Body (JSON):
+{
+  "sourceChain": "string",    // REQUIRED: Source chain
+  "targetChain": "string",    // REQUIRED: Target chain
+  "inputAsset": "string",     // REQUIRED: Input asset address
+  "outputAsset": "string",    // REQUIRED: Output asset address
+  "amount": "string",         // REQUIRED: Amount as string
+  "slippageBps": number       // OPTIONAL: Slippage in basis points (default: 50 = 0.5%)
+}
+
+Response:
+{
+  "success": true,
+  "quotes": [
+    {
+      "id": "string",
+      "solverId": "string",
+      "inputAmount": "string",
+      "outputAmount": "string",
+      "fee": "string",
+      "gasEstimate": "string",
+      "expiresAt": number,
+      "estimatedTime": number,
+      "solverReputation": number
+    }
+  ]
+}
+
+---
+
+## RESPONSE FIELDS
+
+### Intent Response Fields
+| Field | Type | Description |
+|-------|------|-------------|
+| success | boolean | Operation success status |
+| intentId | string | Unique intent identifier (UUID) |
+| type | string | Intent type (transfer, swap) |
+| stealthAddress | string | One-time stealth address (hex) |
+| commitment | string | Pedersen commitment hash (hex) |
+| sourceChain | string | Source blockchain |
+| targetChain | string | Target blockchain |
+| expiresAt | number | Unix timestamp expiration |
+
+### Stealth Address
+- Generated using ECDH key exchange
+- One-time address for each transaction
+- Prevents address linking
+
+### Commitment
+- Pedersen commitment of intent data
+- Hides transaction details on-chain
+- Verifiable without revealing contents
+
+---
+
+## ERROR CODES
+
+| HTTP | Error | Description |
+|------|-------|-------------|
+| 400 | Missing required fields | Request validation failed |
+| 404 | Not found | Resource not found |
+| 500 | Failed to create intent | Server error during processing |
+| 500 | Internal error | Unexpected server error |
+
+Error Response Format:
+{
+  "error": "Error message",
+  "details": "Additional error details"
+}
+
+---
+
+## SUPPORTED CHAINS
+
+| Chain | Chain ID | Type | Status |
+|-------|----------|------|--------|
+| solana | solana | SVM | Active |
+| ethereum | ethereum | EVM | Active |
+| polygon | polygon | EVM | Active |
+| arbitrum | arbitrum | EVM | Active |
+
+---
+
+## PRIVACY LEVELS
+
+| Level | Description | Use Case |
+|-------|-------------|----------|
+| transparent | All data visible | Debugging, auditing |
+| shielded | Maximum privacy | Default, recommended |
+| compliant | Viewing keys enabled | Regulatory compliance |
+
+---
+
+## CRYPTOGRAPHIC PRIMITIVES
+
+### WOTS+ (Winternitz One-Time Signatures)
+- Post-quantum secure signatures
+- Parameters: w=16, n=32, len=67
+- One signature per key (one-time use)
+
+### Merkle Trees
+- XMSS-style key management
+- Efficient proof verification
+- Supports large key pools
+
+### Stealth Addressing
+- ECDH-based key derivation
+- One-time addresses per transaction
+- Unlinkable payments
+
+### Pedersen Commitments
+- Homomorphic hiding
+- Amount confidentiality
+- Verifiable without revealing
+
+---
+
+## EXAMPLE USE CASES
+
+### 1. Private Token Transfer
+POST /api/v1/transfer
+{
+  "recipient": "0x742d35Cc6634C0532925a3b844Bc9e7595f5bE12",
+  "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "amount": "1000000000",
+  "sourceChain": "ethereum",
+  "privacyLevel": "shielded"
+}
+
+### 2. Cross-Chain Transfer
+POST /api/v1/transfer
+{
+  "recipient": "0x742d35Cc6634C0532925a3b844Bc9e7595f5bE12",
+  "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "amount": "1000000000",
+  "sourceChain": "ethereum",
+  "targetChain": "polygon",
+  "privacyLevel": "shielded"
+}
+
+### 3. Private Swap
+POST /api/v1/swap
+{
+  "tokenIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "tokenOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+  "amountIn": "1000000000",
+  "minAmountOut": "500000000000000000",
+  "privacyLevel": "shielded"
+}
+
+### 4. Solana Transfer
+POST /api/v1/transfer
+{
+  "recipient": "MqFdeJsRooZGgSwAsCeRnZ3y8v4CL9xpZDRNxbaQ8VN",
+  "asset": "So11111111111111111111111111111111111111112",
+  "amount": "1000000000",
+  "sourceChain": "solana",
+  "privacyLevel": "shielded"
+}
+
+### 5. Register Key Pool
+POST /api/v1/pools
+{
+  "merkleRoot": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234567890ab",
+  "totalKeys": 10000,
+  "params": {"w": 16, "n": 32}
+}
+
+---
+
+## INTEGRATION NOTES
+
+### Frontend Integration
+- Use `/api/v1/transfer` for simple transfers
+- Display `intentId` for tracking
+- Show `stealthAddress` as destination
+- Store `commitment` for verification
+
+### Wallet Integration
+- Sign intent hash with user's wallet
+- Submit signed intent via `/api/v1/intents/submit`
+- Monitor status via `/api/v1/intents/:id`
+
+### Batch Settlement
+- Intents are batched for gas efficiency
+- Use `/api/v1/batches` to monitor pending
+- Force settlement with `/api/v1/batches/flush`
+
+---
+
+## RATE LIMITS
+
+| Endpoint | Limit |
+|----------|-------|
+| All endpoints | 100 requests/minute |
+
+---
+
+## CHANGELOG
+
+### v0.1.0
+- Initial release
+- Transfer and swap intents
+- WOTS+ key pool management
+- Multi-chain support (EVM + Solana)
+- Privacy levels (transparent, shielded, compliant)
