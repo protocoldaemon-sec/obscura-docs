@@ -10,16 +10,35 @@ export const navigation: NavGroup[] = [
     defaultOpen: true,
   },
   {
-    title: 'Endpoints',
-    icon: 'code',
+    title: 'Status',
+    icon: 'activity',
     items: [
-      { title: 'Transfer', href: '/endpoints/transfer' },
+      { title: 'Health & Status', href: '/endpoints/status' },
+    ],
+    defaultOpen: true,
+  },
+  {
+    title: 'Privacy Transfers',
+    icon: 'shield',
+    items: [
       { title: 'Deposit', href: '/endpoints/deposit' },
-      { title: 'Swap', href: '/endpoints/swap' },
-      { title: 'Intents', href: '/endpoints/intents' },
-      { title: 'Batches', href: '/endpoints/batches' },
-      { title: 'Pools', href: '/endpoints/pools' },
-      { title: 'Quotes', href: '/endpoints/quotes' },
+      { title: 'Withdraw', href: '/endpoints/withdraw' },
+    ],
+    defaultOpen: true,
+  },
+  {
+    title: 'Batches',
+    icon: 'layers',
+    items: [
+      { title: 'Batch Management', href: '/endpoints/batches' },
+    ],
+    defaultOpen: true,
+  },
+  {
+    title: 'Relayer',
+    icon: 'send',
+    items: [
+      { title: 'Relayer Service', href: '/endpoints/relayer' },
     ],
     defaultOpen: true,
   },
@@ -30,6 +49,8 @@ export const navigation: NavGroup[] = [
       { title: 'Error Codes', href: '/reference/errors' },
       { title: 'Supported Chains', href: '/reference/chains' },
       { title: 'Cryptography', href: '/reference/cryptography' },
+      { title: 'ZK Compression', href: '/reference/zk-compression' },
+      { title: 'LLM Documentation', href: '/reference/llm-docs' },
     ],
     defaultOpen: true,
   },

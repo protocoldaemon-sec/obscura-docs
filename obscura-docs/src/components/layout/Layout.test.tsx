@@ -42,7 +42,7 @@ describe('Layout Component', () => {
       </Layout>
     )
 
-    expect(screen.getByText('Obscura')).toBeInTheDocument()
+    expect(screen.getByAltText('Obscura')).toBeInTheDocument()
   })
 
   it('should render search input', () => {

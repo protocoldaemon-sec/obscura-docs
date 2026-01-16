@@ -4,16 +4,16 @@ import { navigation } from './navigation'
 
 const validRoutes = [
   '/',
-  '/endpoints/transfer',
+  '/endpoints/status',
   '/endpoints/deposit',
-  '/endpoints/swap',
-  '/endpoints/intents',
+  '/endpoints/withdraw',
   '/endpoints/batches',
-  '/endpoints/pools',
-  '/endpoints/quotes',
+  '/endpoints/relayer',
   '/reference/errors',
   '/reference/chains',
   '/reference/cryptography',
+  '/reference/zk-compression',
+  '/reference/llm-docs',
 ]
 
 describe('Navigation Data', () => {
@@ -51,7 +51,7 @@ describe('Navigation Data', () => {
   })
 
   it('should have valid icons for all groups', () => {
-    const validIcons = ['book', 'code', 'file-text']
+    const validIcons = ['book', 'code', 'file-text', 'activity', 'shield', 'eye-off', 'layers', 'send']
     
     for (const group of navigation) {
       expect(validIcons).toContain(group.icon)

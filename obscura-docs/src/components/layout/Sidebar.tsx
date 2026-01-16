@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useLocation, Link } from 'react-router-dom'
-import { ChevronDown, ChevronRight, Book, Code, FileText, Circle, Clock, Calendar } from 'lucide-react'
+import { ChevronDown, ChevronRight, Book, Code, FileText, Circle, Clock, Calendar, Activity, Shield, EyeOff, Layers, Send } from 'lucide-react'
 
 const API_BASE_URL = 'https://obscura-api.daemonprotocol.com'
 
@@ -27,6 +27,11 @@ const iconMap: Record<string, React.ReactNode> = {
   book: <Book className="w-4 h-4" />,
   code: <Code className="w-4 h-4" />,
   'file-text': <FileText className="w-4 h-4" />,
+  activity: <Activity className="w-4 h-4" />,
+  shield: <Shield className="w-4 h-4" />,
+  'eye-off': <EyeOff className="w-4 h-4" />,
+  layers: <Layers className="w-4 h-4" />,
+  send: <Send className="w-4 h-4" />,
 }
 
 export default function Sidebar({ navigation, isOpen, onClose, searchQuery }: SidebarProps) {

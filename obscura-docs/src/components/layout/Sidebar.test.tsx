@@ -89,11 +89,11 @@ describe('Sidebar Component', () => {
         navigation={navigation}
         isOpen={true}
         onClose={() => {}}
-        searchQuery="transfer"
+        searchQuery="deposit"
       />
     )
 
-    expect(screen.getByText('Transfer')).toBeInTheDocument()
-    expect(screen.queryByText('Deposit')).not.toBeInTheDocument()
+    expect(screen.getByText('Deposit')).toBeInTheDocument()
+    expect(screen.queryByText('Relayer Service')).not.toBeInTheDocument()
   })
 })

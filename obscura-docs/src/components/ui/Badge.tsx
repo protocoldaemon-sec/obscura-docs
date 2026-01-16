@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-type BadgeVariant = 'get' | 'post' | 'put' | 'delete' | 'required' | 'optional'
+type BadgeVariant = 'get' | 'post' | 'put' | 'delete' | 'required' | 'optional' | 'warning'
 
 interface BadgeProps {
   variant: BadgeVariant
@@ -14,6 +14,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   delete: 'bg-[#ef4444]/10 text-[#ef4444] border-[#ef4444]/20',
   required: 'bg-[#ef4444]/10 text-[#ef4444] border-[#ef4444]/20',
   optional: 'bg-[var(--bg-tertiary)] text-[var(--text-muted)] border-[var(--border-color)]',
+  warning: 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/20',
 }
 
 export default function Badge({ variant, children }: BadgeProps) {

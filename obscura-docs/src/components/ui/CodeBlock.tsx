@@ -3,7 +3,7 @@ import { Copy, Check } from 'lucide-react'
 
 interface CodeBlockProps {
   code: string
-  language?: 'json' | 'bash' | 'typescript'
+  language?: 'json' | 'bash' | 'typescript' | 'plaintext'
   title?: string
 }
 
