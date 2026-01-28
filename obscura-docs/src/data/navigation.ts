@@ -30,6 +30,7 @@ export const navigation: NavGroup[] = [
       { title: 'Submit Quote', href: '/otc/quote' },
       { title: 'Accept Quote', href: '/otc/accept' },
       { title: 'Private Messages', href: '/otc/messages' },
+      { title: 'Nullifier Tracking', href: '/otc/nullifier-tracking' },
       { title: 'Admin Whitelist', href: '/otc/admin' },
     ],
     defaultOpen: true,

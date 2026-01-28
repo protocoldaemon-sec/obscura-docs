@@ -11,6 +11,7 @@ import QuoteRequest from './pages/otc/QuoteRequest'
 import Quote from './pages/otc/Quote'
 import Accept from './pages/otc/Accept'
 import Messages from './pages/otc/Messages'
+import NullifierTracking from './pages/otc/NullifierTracking'
 import Admin from './pages/otc/Admin'
 import ErrorCodes from './pages/reference/ErrorCodes'
 import SupportedChains from './pages/reference/SupportedChains'
@@ -33,6 +34,7 @@ function App() {
         <Route path="/otc/quote" element={<Quote />} />
         <Route path="/otc/accept" element={<Accept />} />
         <Route path="/otc/messages" element={<Messages />} />
+        <Route path="/otc/nullifier-tracking" element={<NullifierTracking />} />
         <Route path="/otc/admin" element={<Admin />} />
         <Route path="/reference/errors" element={<ErrorCodes />} />
         <Route path="/reference/chains" element={<SupportedChains />} />
