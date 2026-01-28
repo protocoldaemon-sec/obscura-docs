@@ -15,6 +15,7 @@ export const navigation: NavGroup[] = [
     items: [
       { title: 'Health & Status', href: '/vault/status' },
       { title: 'Deposit', href: '/vault/deposit' },
+      { title: 'Balance Query', href: '/vault/balance' },
       { title: 'Withdraw', href: '/vault/withdraw' },
       { title: 'Batch Management', href: '/vault/batches' },
       { title: 'Relayer Service', href: '/vault/relayer' },

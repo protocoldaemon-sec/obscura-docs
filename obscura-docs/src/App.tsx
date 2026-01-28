@@ -3,6 +3,7 @@ import Layout from './components/layout/Layout'
 import Overview from './pages/Overview'
 import Status from './pages/endpoints/Status'
 import Deposit from './pages/endpoints/Deposit'
+import Balance from './pages/endpoints/Balance'
 import Withdraw from './pages/endpoints/Withdraw'
 import Batches from './pages/endpoints/Batches'
 import Relayer from './pages/endpoints/Relayer'
@@ -24,6 +25,7 @@ function App() {
         <Route path="/" element={<Overview />} />
         <Route path="/vault/status" element={<Status />} />
         <Route path="/vault/deposit" element={<Deposit />} />
+        <Route path="/vault/balance" element={<Balance />} />
         <Route path="/vault/withdraw" element={<Withdraw />} />
         <Route path="/vault/batches" element={<Batches />} />
         <Route path="/vault/relayer" element={<Relayer />} />
